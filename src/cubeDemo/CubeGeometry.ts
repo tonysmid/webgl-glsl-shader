@@ -1,18 +1,25 @@
+
+// Constants
 const CUBE_FACES = 6;
 const VERTS_PER_FACE = 4;
+
+// ids of the cube sides
 const GROUPS = [0, 3, 1, 4, 2, 5];
 
 export const cubeGeometryPositions = [
+	// group 0
 	0.5, 0.5, 0.5,
 	0.5, 0.5, -0.5,
 	0.5, -0.5, 0.5,
 	0.5, -0.5, -0.5,
 
+   // group 1
 	-0.5, 0.5, -0.5,
 	-0.5, 0.5, 0.5,
 	-0.5, -0.5, -0.5,
 	-0.5, -0.5, 0.5,
 
+  // ...
 	-0.5, 0.5, -0.5,
 	0.5, 0.5, -0.5,
 	-0.5, 0.5, 0.5,
@@ -44,13 +51,11 @@ export const cubeGeometryIndices = [
 ];
 
 export function getCubeGeometryUVs() {
-	const CUBE_FACES = 6;
 	const faceUvs = [0, 1, 1, 1, 0, 0, 1, 0];
 	const buffer = [];
 	for (let i = 0; i < CUBE_FACES; i++) {
 		buffer.push(...faceUvs);
 	}
-
 	return buffer;
 }
 
@@ -62,6 +67,11 @@ export function getCubeGeometryGroups() {
 	return buffer;
 }
 
+/**
+ * Maps the index of a vertex to face group of the cube
+ * Used for mapping raycast intersection result
+ * @param vertexIndex
+ */
 export function cubeGeometryIndexToGroup(vertexIndex: number) {
 	return GROUPS[Math.floor(vertexIndex / VERTS_PER_FACE)];
 }

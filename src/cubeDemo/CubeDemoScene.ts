@@ -4,22 +4,28 @@ import CubeProgram from './CubeProgram';
 import {cubeGeometryIndexToGroup} from "./CubeGeometry";
 import FPSCounter from "./FPSCounter";
 
+/**
+ * Main class to run the cube demo
+ *
+ * Sets up the THREE scene, renderer, interactions and fps counter
+ * Uses the CubeProgram to add the interactive cube into the scene.
+ */
 export default class CubeDemoScene {
-	private container!: HTMLElement;
-	private screen!: Vector2;
+	private container: HTMLElement;
+	private screen: Vector2;
 
-	private renderer!: WebGLRenderer;
-	private scene!: Scene;
-	private camera!: PerspectiveCamera;
+	private renderer: WebGLRenderer;
+	private scene: Scene;
+	private camera: PerspectiveCamera;
 
-	private clock!: Clock;
+	private clock: Clock;
+	private counter:FPSCounter;
 
-	private controls!: OrbitControls;
+	private controls: OrbitControls;
 	private pointer = new Vector2();
 	private raycaster = new Raycaster();
 
 	private cube!: CubeProgram;
-	private counter:FPSCounter;
 
 	constructor(containerId: string) {
 		this.initContainer(containerId);
@@ -27,6 +33,10 @@ export default class CubeDemoScene {
 		this.initListeners();
 	}
 
+	/**
+	 * Tries to find the DOM element where this demo scene should run and reads sides ratio
+	 * @param containerId id of the root element
+	 */
 	initContainer(containerId: string) {
 		const containerCandidate = document.getElementById(containerId);
 		if (!containerCandidate) throw new Error('Container not found');
@@ -34,6 +44,9 @@ export default class CubeDemoScene {
 		this.screen = new Vector2(this.container.clientWidth, this.container.clientHeight);
 	}
 
+	/**
+	 * Prepares Three scene
+	 */
 	initScene() {
 		this.scene = new Scene();
 		this.clock = new Clock();
@@ -43,6 +56,7 @@ export default class CubeDemoScene {
 		this.initOrbitControls();
 		this.initCounter();
 
+		// initialize the cube
 		this.cube = new CubeProgram();
 		this.scene.add(this.cube.getMesh());
 
@@ -79,26 +93,30 @@ export default class CubeDemoScene {
 		window.addEventListener('resize', this.onResize);
 		window.addEventListener( 'pointermove', this.onPointerMove );
 
+		// run for the first time to initialize the sizes and aspect ratio for the camera
 		this.onResize();
 	}
 
 	render() {
+		this.counter.countNewFrame();
 		this.renderer.render(this.scene, this.camera);
 	}
 
 	onResize = () => {
+		// read new container dimensions
 		this.screen.set(this.container.clientWidth, this.container.clientHeight);
 
+		// set camera
 		this.camera.aspect = this.screen.x / this.screen.y;
 		this.camera.updateProjectionMatrix();
 
+		// set renderer size
 		this.renderer.setSize(this.screen.x, this.screen.y);
-
-		this.renderer.render(this.scene, this.camera);
 
 		this.render();
 	};
 
+	// based on raycaster example https://threejs.org/docs/?q=rayca#api/en/core/Raycaster
 	onPointerMove = (event: MouseEvent) => {
 			// calculate pointer position in normalized device coordinates
 			// (-1 to +1) for both components
@@ -116,8 +134,6 @@ export default class CubeDemoScene {
 
 		this.animateCubeRotation();
 		this.render();
-
-		this.counter.countNewFrame();
 	}
 
 	rayCast() {
@@ -127,6 +143,7 @@ export default class CubeDemoScene {
 		// calculate objects intersecting the picking ray
 		const intersects = this.raycaster.intersectObjects( this.scene.children );
 
+		// no intersections with the cube
 		if(!intersects.length){
 			this.cube.setActiveGroup(-1);
 			return;
@@ -134,11 +151,19 @@ export default class CubeDemoScene {
 		this.cube.setActiveGroup(cubeGeometryIndexToGroup(intersects[0].face.a));
 	}
 
+	/**
+	 * Rotates the cube based on the elapsed time
+	 * so that the rotation angle is independent on the FPS
+	 */
 	animateCubeRotation() {
 		const elapsed = this.clock.getElapsedTime();
 		this.cube.getMesh().rotation.y = elapsed;
 	}
 
+	/**
+	 * When finished with the demo scene\
+	 * use this method to clear the resources
+	 */
 	dispose() {
 		this.cube.dispose();
 		this.renderer.dispose();

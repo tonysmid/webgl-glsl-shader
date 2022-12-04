@@ -13,17 +13,21 @@ export enum BufferSize {
 	UV = 2,
 }
 
+// how many tiles on the checkerboard
 const CHECKERBOARD_SIZE = 10;
+// dark tiles opacity
 const CHECKERBOARD_OPACITY_LOW = 0.2;
+// light tiles opacity
 const CHECKERBOARD_OPACITY_HIGH = 0.8;
+// how much to increase the opacity on hover
 const CHECKERBOARD_OPACITY_INCREASE = 0.2;
 
 export default class CubeProgram {
-	private uniforms!: any;
-	private mesh!: Mesh;
+	private readonly uniforms!: any;
+	private readonly mesh!: Mesh;
 
 	private geometry!: BufferGeometry;
-	private material!: ShaderMaterial;
+	private readonly material!: ShaderMaterial;
 
 	constructor() {
 		this.createGeometry();
@@ -53,6 +57,7 @@ export default class CubeProgram {
 		this.geometry.setAttribute('position', new BufferAttribute(new Float32Array(cubeGeometryPositions), BufferSize.Position));
 		this.geometry.setAttribute('uv', new BufferAttribute(new Float32Array(getCubeGeometryUVs()), BufferSize.UV));
 		this.geometry.setAttribute('group', new BufferAttribute(new Uint16Array(getCubeGeometryGroups()), 1));
+
 		this.geometry.setIndex(new BufferAttribute(new Uint16Array(cubeGeometryIndices), 1));
 	}
 
@@ -60,15 +65,16 @@ export default class CubeProgram {
 		return this.mesh;
 	}
 
+	/**
+	 * Sets the active group (cube side) as uniform in the program
+	 * @param activeGroupId
+	 */
 	setActiveGroup(activeGroupId: number) {
-		if(activeGroupId === this.material.uniforms.uActiveGroup.value){
+		if(activeGroupId === this.material.uniforms.uActiveGroup?.value){
 			return;
 		}
-
-		if(this.material){
-			this.material.uniforms.uActiveGroup.value = activeGroupId;
-			this.material.uniformsNeedUpdate = true;
-		}
+		this.material.uniforms.uActiveGroup.value = activeGroupId;
+		this.material.uniformsNeedUpdate = true;
 	}
 
 	dispose() {
