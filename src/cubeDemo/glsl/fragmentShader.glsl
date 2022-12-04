@@ -1,11 +1,10 @@
-
 uniform float uCheckerboardSize;
 uniform float uOpacityLow;
 uniform float uOpacityHigh;
 
 varying vec2 vUv;
 varying vec3 vColor;
-varying float vOpacityIncrease; // increase the opacity in case of mouse hover (resolved in vertex shader)
+varying float vOpacityIncrease;// increase the opacity in case of mouse hover (resolved in vertex shader)
 
 void main() {
 
@@ -15,7 +14,7 @@ void main() {
 	bool yEven = mod(vUv.y * uCheckerboardSize, 2.0) > 1.0;
 
 	// XOR - either x or y is even, not both to make a dark tile
-	if(xEven ^^ yEven){
+	if (xEven ^^ yEven){
 		opacity = uOpacityLow;
 	} else {
 		opacity = uOpacityHigh;

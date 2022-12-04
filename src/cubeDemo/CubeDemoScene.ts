@@ -1,8 +1,8 @@
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import {PerspectiveCamera, Scene, Clock, Vector2, WebGLRenderer, Raycaster} from 'three';
+import { PerspectiveCamera, Scene, Clock, Vector2, WebGLRenderer, Raycaster } from 'three';
 import CubeProgram from './CubeProgram';
-import {cubeGeometryIndexToGroup} from "./CubeGeometry";
-import FPSCounter from "./FPSCounter";
+import { cubeGeometryIndexToGroup } from './CubeGeometry';
+import FPSCounter from './FPSCounter';
 
 /**
  * Main class to run the cube demo
@@ -19,7 +19,7 @@ export default class CubeDemoScene {
 	private camera: PerspectiveCamera;
 
 	private clock: Clock;
-	private counter:FPSCounter;
+	private counter: FPSCounter;
 
 	private controls: OrbitControls;
 	private pointer = new Vector2();
@@ -91,7 +91,7 @@ export default class CubeDemoScene {
 
 	initListeners() {
 		window.addEventListener('resize', this.onResize);
-		window.addEventListener( 'pointermove', this.onPointerMove );
+		window.addEventListener('pointermove', this.onPointerMove);
 
 		// run for the first time to initialize the sizes and aspect ratio for the camera
 		this.onResize();
@@ -118,11 +118,11 @@ export default class CubeDemoScene {
 
 	// based on raycaster example https://threejs.org/docs/?q=rayca#api/en/core/Raycaster
 	onPointerMove = (event: MouseEvent) => {
-			// calculate pointer position in normalized device coordinates
-			// (-1 to +1) for both components
-			this.pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-			this.pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-	}
+		// calculate pointer position in normalized device coordinates
+		// (-1 to +1) for both components
+		this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+		this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+	};
 
 	runLoop() {
 		requestAnimationFrame(() => {
@@ -138,13 +138,13 @@ export default class CubeDemoScene {
 
 	rayCast() {
 		// update the picking ray with the camera and pointer position
-		this.raycaster.setFromCamera( this.pointer, this.camera );
+		this.raycaster.setFromCamera(this.pointer, this.camera);
 
 		// calculate objects intersecting the picking ray
-		const intersects = this.raycaster.intersectObjects( this.scene.children );
+		const intersects = this.raycaster.intersectObjects(this.scene.children);
 
 		// no intersections with the cube
-		if(!intersects.length){
+		if (!intersects.length) {
 			this.cube.setActiveGroup(-1);
 			return;
 		}
@@ -169,6 +169,6 @@ export default class CubeDemoScene {
 		this.renderer.dispose();
 		this.counter.dispose();
 		window.removeEventListener('resize', this.onResize);
-		window.removeEventListener( 'pointermove', this.onPointerMove );
+		window.removeEventListener('pointermove', this.onPointerMove);
 	}
 }

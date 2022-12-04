@@ -1,12 +1,7 @@
-import {BufferAttribute, BufferGeometry, DoubleSide, Mesh, ShaderMaterial} from 'three';
+import { BufferAttribute, BufferGeometry, DoubleSide, Mesh, ShaderMaterial } from 'three';
 import vertexShader from './glsl/vertexShader.glsl?raw';
 import fragmentShader from './glsl/fragmentShader.glsl?raw';
-import {
-	cubeGeometryIndices,
-	cubeGeometryPositions,
-	getCubeGeometryGroups,
-	getCubeGeometryUVs
-} from './CubeGeometry';
+import { cubeGeometryIndices, cubeGeometryPositions, getCubeGeometryGroups, getCubeGeometryUVs } from './CubeGeometry';
 
 export enum BufferSize {
 	Position = 3,
@@ -33,11 +28,11 @@ export default class CubeProgram {
 		this.createGeometry();
 
 		this.uniforms = {
-			uCheckerboardSize: {type: 'float', value: CHECKERBOARD_SIZE},
-			uOpacityLow: {type: 'float', value: CHECKERBOARD_OPACITY_LOW},
-			uOpacityHigh: {type: 'float', value: CHECKERBOARD_OPACITY_HIGH},
-			uOpacityIncrease: {type: 'float', value: CHECKERBOARD_OPACITY_INCREASE},
-			uActiveGroup: {type: 'float', value: -1},
+			uCheckerboardSize: { type: 'float', value: CHECKERBOARD_SIZE },
+			uOpacityLow: { type: 'float', value: CHECKERBOARD_OPACITY_LOW },
+			uOpacityHigh: { type: 'float', value: CHECKERBOARD_OPACITY_HIGH },
+			uOpacityIncrease: { type: 'float', value: CHECKERBOARD_OPACITY_INCREASE },
+			uActiveGroup: { type: 'float', value: -1 },
 		};
 
 		this.material = new ShaderMaterial({
@@ -70,7 +65,7 @@ export default class CubeProgram {
 	 * @param activeGroupId
 	 */
 	setActiveGroup(activeGroupId: number) {
-		if(activeGroupId === this.material.uniforms.uActiveGroup?.value){
+		if (activeGroupId === this.material.uniforms.uActiveGroup?.value) {
 			return;
 		}
 		this.material.uniforms.uActiveGroup.value = activeGroupId;

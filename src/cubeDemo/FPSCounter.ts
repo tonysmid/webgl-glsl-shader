@@ -2,8 +2,7 @@
  * Simple class to count and display frames
  */
 export default class FPSCounter {
-
-	private readonly counterElement:HTMLDivElement;
+	private readonly counterElement: HTMLDivElement;
 	private readonly interval: number;
 	private framesPerLastSecond = 0;
 
@@ -16,7 +15,7 @@ export default class FPSCounter {
 		if (!containerCandidate) throw new Error('Container for FPS counter was not found');
 
 		// create a new div element
-		this.counterElement = document.createElement("div") as HTMLDivElement;
+		this.counterElement = document.createElement('div') as HTMLDivElement;
 		this.counterElement.classList.add('fps-counter');
 
 		containerCandidate.appendChild(this.counterElement);
@@ -31,14 +30,14 @@ export default class FPSCounter {
 	private readFrames = () => {
 		this.counterElement.innerText = `FPS: ${this.framesPerLastSecond}`;
 		this.framesPerLastSecond = 0;
-	}
+	};
 
 	/**
 	 * Counts new rendered frame
 	 * Call this together with your render method
 	 */
 	public countNewFrame() {
-		this.framesPerLastSecond ++;
+		this.framesPerLastSecond++;
 	}
 
 	dispose() {

@@ -1,8 +1,7 @@
-
 uniform float uOpacityIncrease;
-uniform float uActiveGroup;	// hovered active group
+uniform float uActiveGroup;// hovered active group
 
-attribute float group; // current group
+attribute float group;// current group
 
 varying vec2 vUv;
 varying vec3 vColor;
@@ -19,17 +18,17 @@ void main() {
 	vUv = uv;
 
 	int colorGroup = int(group) % 3;
-	if(colorGroup == 0) {
+	if (colorGroup == 0) {
 		vColor = greenColor;
-	} else if(colorGroup == 1) {
+	} else if (colorGroup == 1) {
 		vColor = redColor;
-	} else if(colorGroup == 2) {
+	} else if (colorGroup == 2) {
 		vColor = blueColor;
 	}
 
 	// Check active group - if this side is active, increase the opacity
 	float opacityIncrease = 0.0;
-	if(uActiveGroup == group) {
+	if (uActiveGroup == group) {
 		opacityIncrease = uOpacityIncrease;
 	}
 
