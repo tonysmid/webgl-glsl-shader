@@ -7,18 +7,14 @@ export default class FPSCounter {
 	private framesPerLastSecond = 0;
 
 	/**
-	 * @param containerId in which container to display the counter
+	 * @param container parent html element to mount the counter
 	 */
-	constructor(containerId: string) {
-		// check if container exists
-		const containerCandidate = document.getElementById(containerId);
-		if (!containerCandidate) throw new Error('Container for FPS counter was not found');
-
+	constructor(container: HTMLElement) {
 		// create a new div element
 		this.counterElement = document.createElement('div') as HTMLDivElement;
 		this.counterElement.classList.add('fps-counter');
 
-		containerCandidate.appendChild(this.counterElement);
+		container.appendChild(this.counterElement);
 
 		// read frames every second
 		this.interval = setInterval(this.readFrames, 1000);

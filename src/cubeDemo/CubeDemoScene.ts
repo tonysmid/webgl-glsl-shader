@@ -29,13 +29,13 @@ export default class CubeDemoScene {
 
 	constructor(containerId: string) {
 		this.initContainer(containerId);
+		this.initCounter();
 		this.initScene();
 		this.initListeners();
 	}
 
 	/**
 	 * Tries to find the DOM element where this demo scene should run and reads sides ratio
-	 * @param containerId id of the root element
 	 */
 	initContainer(containerId: string) {
 		const containerCandidate = document.getElementById(containerId);
@@ -54,7 +54,6 @@ export default class CubeDemoScene {
 		this.initCamera();
 		this.initRenderer();
 		this.initOrbitControls();
-		this.initCounter();
 
 		// initialize the cube
 		this.cube = new CubeProgram();
@@ -65,7 +64,7 @@ export default class CubeDemoScene {
 	}
 
 	initCounter() {
-		this.counter = new FPSCounter('app');
+		this.counter = new FPSCounter(this.container);
 	}
 
 	initCamera() {
