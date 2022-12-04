@@ -19,3 +19,10 @@ body {
 #app canvas {
 	outline: none;
 }
+
+.fps-counter {
+	position: absolute;
+	top: 0;
+	color: white;
+	font-size: 12px;
+}

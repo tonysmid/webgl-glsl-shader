@@ -1,8 +1,8 @@
-// import Stats from 'three/examples/jsm/libs/stats.module';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import {PerspectiveCamera, Scene, Clock, Vector2, WebGLRenderer, Raycaster} from 'three';
 import CubeProgram from './CubeProgram';
 import {cubeGeometryIndexToGroup} from "./CubeGeometry";
+import FPSCounter from "./FPSCounter";
 
 export default class CubeDemoScene {
 	private container!: HTMLElement;
@@ -19,6 +19,7 @@ export default class CubeDemoScene {
 	private raycaster = new Raycaster();
 
 	private cube!: CubeProgram;
+	private counter:FPSCounter;
 
 	constructor(containerId: string) {
 		this.initContainer(containerId);
@@ -40,12 +41,17 @@ export default class CubeDemoScene {
 		this.initCamera();
 		this.initRenderer();
 		this.initOrbitControls();
+		this.initCounter();
 
 		this.cube = new CubeProgram();
 		this.scene.add(this.cube.getMesh());
 
 		// Init animation
 		this.runLoop();
+	}
+
+	initCounter() {
+		this.counter = new FPSCounter('app');
 	}
 
 	initCamera() {
@@ -106,12 +112,12 @@ export default class CubeDemoScene {
 		});
 
 		if (this.controls) this.controls.update();
-
 		this.rayCast();
 
 		this.animateCubeRotation();
-
 		this.render();
+
+		this.counter.countNewFrame();
 	}
 
 	rayCast() {
@@ -136,6 +142,7 @@ export default class CubeDemoScene {
 	dispose() {
 		this.cube.dispose();
 		this.renderer.dispose();
+		this.counter.dispose();
 		window.removeEventListener('resize', this.onResize);
 		window.removeEventListener( 'pointermove', this.onPointerMove );
 	}
