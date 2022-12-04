@@ -1,7 +1,7 @@
 // import Stats from 'three/examples/jsm/libs/stats.module';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { PerspectiveCamera, Scene, Clock, Vector2, WebGLRenderer } from 'three';
-import Cube from './Cube';
+import CubeProgram from './CubeProgram';
 
 export default class CubeDemoScene {
 	private container!: HTMLElement;
@@ -15,7 +15,7 @@ export default class CubeDemoScene {
 
 	private controls!: OrbitControls;
 
-	private cube!: Cube;
+	private cube!: CubeProgram;
 
 	constructor(containerId: string) {
 		this.initContainer(containerId);
@@ -38,7 +38,7 @@ export default class CubeDemoScene {
 		this.initRenderer();
 		this.initOrbitControls();
 
-		this.cube = new Cube();
+		this.cube = new CubeProgram();
 		this.scene.add(this.cube.getMesh());
 
 		// Init animation
@@ -47,12 +47,11 @@ export default class CubeDemoScene {
 
 	initCamera() {
 		this.camera = new PerspectiveCamera(75, this.screen.x / this.screen.y, 0.1, 100);
-		this.camera.position.set(-0.7, 0.8, 3);
+		this.camera.position.set(0, 0.8, 3);
 	}
 
 	initRenderer() {
 		this.renderer = new WebGLRenderer({
-			alpha: true,
 			antialias: true,
 		});
 
@@ -106,7 +105,8 @@ export default class CubeDemoScene {
 		this.cube.getMesh().rotation.y = elapsed;
 	}
 
-	destroy() {
+	dispose() {
+		this.cube.dispose();
 		this.renderer.dispose();
 		window.removeEventListener('resize', this.onResize);
 	}
