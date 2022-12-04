@@ -2,10 +2,10 @@
 uniform float uCheckerboardSize;
 uniform float uOpacityLow;
 uniform float uOpacityHigh;
-uniform float uOpacityIncrease;
 
 varying vec2 vUv;
 varying vec3 vColor;
+varying float vOpacityIncrease;
 
 void main() {
 
@@ -19,6 +19,8 @@ void main() {
 	} else {
 		opacity = uOpacityHigh;
 	}
+
+	opacity = opacity + vOpacityIncrease;
 
 	gl_FragColor = vec4(vColor, opacity);
 }

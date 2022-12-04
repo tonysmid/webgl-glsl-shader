@@ -4,13 +4,12 @@ import fragmentShader from './glsl/fragmentShader.glsl?raw';
 import {
 	cubeGeometryIndices,
 	cubeGeometryPositions,
-	getCubeGeometryColorGroups,
+	getCubeGeometryGroups,
 	getCubeGeometryUVs
 } from './CubeGeometry';
 
 export enum BufferSize {
 	Position = 3,
-	Normal = 3,
 	UV = 2,
 }
 
@@ -34,9 +33,10 @@ export default class CubeProgram {
 			uOpacityLow: {type: 'float', value: CHECKERBOARD_OPACITY_LOW},
 			uOpacityHigh: {type: 'float', value: CHECKERBOARD_OPACITY_HIGH},
 			uOpacityIncrease: {type: 'float', value: CHECKERBOARD_OPACITY_INCREASE},
+			uActiveGroup: {type: 'float', value: -1},
 		};
 
-		const materialPlane = new ShaderMaterial({
+		this.material = new ShaderMaterial({
 			uniforms: this.uniforms,
 			transparent: true,
 			side: DoubleSide,
@@ -44,7 +44,7 @@ export default class CubeProgram {
 			fragmentShader,
 		});
 
-		this.mesh = new Mesh(this.geometry, materialPlane);
+		this.mesh = new Mesh(this.geometry, this.material);
 	}
 
 	createGeometry() {
@@ -52,15 +52,23 @@ export default class CubeProgram {
 
 		this.geometry.setAttribute('position', new BufferAttribute(new Float32Array(cubeGeometryPositions), BufferSize.Position));
 		this.geometry.setAttribute('uv', new BufferAttribute(new Float32Array(getCubeGeometryUVs()), BufferSize.UV));
-		// this.geometry.setAttribute('normal', new BufferAttribute(new Float32Array(cubeGeometryNormals), BufferSize.Normal));
-		this.geometry.setAttribute('colorGroup', new BufferAttribute(new Uint16Array(getCubeGeometryColorGroups()), 1));
+		this.geometry.setAttribute('group', new BufferAttribute(new Uint16Array(getCubeGeometryGroups()), 1));
 		this.geometry.setIndex(new BufferAttribute(new Uint16Array(cubeGeometryIndices), 1));
-
-		debugger;
 	}
 
 	getMesh() {
 		return this.mesh;
+	}
+
+	setActiveGroup(activeGroupId: number) {
+		if(activeGroupId === this.material.uniforms.uActiveGroup.value){
+			return;
+		}
+
+		if(this.material){
+			this.material.uniforms.uActiveGroup.value = activeGroupId;
+			this.material.uniformsNeedUpdate = true;
+		}
 	}
 
 	dispose() {

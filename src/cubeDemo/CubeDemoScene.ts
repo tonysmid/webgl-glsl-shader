@@ -1,7 +1,8 @@
 // import Stats from 'three/examples/jsm/libs/stats.module';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { PerspectiveCamera, Scene, Clock, Vector2, WebGLRenderer } from 'three';
+import {PerspectiveCamera, Scene, Clock, Vector2, WebGLRenderer, Raycaster} from 'three';
 import CubeProgram from './CubeProgram';
+import {cubeGeometryIndexToGroup} from "./CubeGeometry";
 
 export default class CubeDemoScene {
 	private container!: HTMLElement;
@@ -14,6 +15,8 @@ export default class CubeDemoScene {
 	private clock!: Clock;
 
 	private controls!: OrbitControls;
+	private pointer = new Vector2();
+	private raycaster = new Raycaster();
 
 	private cube!: CubeProgram;
 
@@ -68,6 +71,8 @@ export default class CubeDemoScene {
 
 	initListeners() {
 		window.addEventListener('resize', this.onResize);
+		window.addEventListener( 'pointermove', this.onPointerMove );
+
 		this.onResize();
 	}
 
@@ -88,6 +93,13 @@ export default class CubeDemoScene {
 		this.render();
 	};
 
+	onPointerMove = (event: MouseEvent) => {
+			// calculate pointer position in normalized device coordinates
+			// (-1 to +1) for both components
+			this.pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+			this.pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+	}
+
 	runLoop() {
 		requestAnimationFrame(() => {
 			this.runLoop();
@@ -95,9 +107,25 @@ export default class CubeDemoScene {
 
 		if (this.controls) this.controls.update();
 
+		this.rayCast();
+
 		this.animateCubeRotation();
 
 		this.render();
+	}
+
+	rayCast() {
+		// update the picking ray with the camera and pointer position
+		this.raycaster.setFromCamera( this.pointer, this.camera );
+
+		// calculate objects intersecting the picking ray
+		const intersects = this.raycaster.intersectObjects( this.scene.children );
+
+		if(!intersects.length){
+			this.cube.setActiveGroup(-1);
+			return;
+		}
+		this.cube.setActiveGroup(cubeGeometryIndexToGroup(intersects[0].face.a));
 	}
 
 	animateCubeRotation() {
@@ -109,5 +137,6 @@ export default class CubeDemoScene {
 		this.cube.dispose();
 		this.renderer.dispose();
 		window.removeEventListener('resize', this.onResize);
+		window.removeEventListener( 'pointermove', this.onPointerMove );
 	}
 }

@@ -1,5 +1,6 @@
 const CUBE_FACES = 6;
 const VERTS_PER_FACE = 4;
+const GROUPS = [0, 3, 1, 4, 2, 5];
 
 export const cubeGeometryPositions = [
 	0.5, 0.5, 0.5,
@@ -33,6 +34,15 @@ export const cubeGeometryPositions = [
 	-0.5, -0.5, -0.5,
 ];
 
+export const cubeGeometryIndices = [
+	0, 2, 1, 2, 3, 1,	// -> group 0
+	4, 6, 5, 6, 7, 5, // -> group 1
+	8, 10, 9, 10, 11, 9, // ...
+	12, 14, 13, 14, 15, 13,
+	16, 18, 17, 18, 19, 17,
+	20, 22, 21, 22, 23, 21,
+];
+
 export function getCubeGeometryUVs() {
 	const CUBE_FACES = 6;
 	const faceUvs = [0, 1, 1, 1, 0, 0, 1, 0];
@@ -44,20 +54,14 @@ export function getCubeGeometryUVs() {
 	return buffer;
 }
 
-export const cubeGeometryIndices = [
-	0, 2, 1, 2, 3, 1,
-	4, 6, 5, 6, 7, 5,
-	8, 10, 9, 10, 11, 9,
-	12, 14, 13, 14, 15, 13,
-	16, 18, 17, 18, 19, 17,
-	20, 22, 21, 22, 23, 21,
-];
-
-export function getCubeGeometryColorGroups() {
+export function getCubeGeometryGroups() {
 	const buffer = new Array(CUBE_FACES * VERTS_PER_FACE);
-	const groups = [0, 0, 1, 1, 2, 2];
-	groups.forEach((groupId, index) => {
+	GROUPS.forEach((groupId, index) => {
 		buffer.fill(groupId, index * VERTS_PER_FACE, (index+1) * VERTS_PER_FACE);
 	})
 	return buffer;
+}
+
+export function cubeGeometryIndexToGroup(vertexIndex: number) {
+	return GROUPS[Math.floor(vertexIndex / VERTS_PER_FACE)];
 }
